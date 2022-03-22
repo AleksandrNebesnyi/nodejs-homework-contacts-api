@@ -78,7 +78,7 @@ async function addContact(body) {
 }
 
 // Обновляет контакт в файле
-const updateContact = async (contactId, body) => {
+const updateContactById = async (contactId, body) => {
   try {
     const contacts = await await listContacts();
 
@@ -126,5 +126,5 @@ module.exports = {
   getContactById,
   removeContact,
   addContact,
-  updateContact,
+  updateContactById,
 };
