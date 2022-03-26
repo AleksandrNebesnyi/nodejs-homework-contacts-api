@@ -1,27 +1,29 @@
 const { Schema, model } = require('mongoose');
-const contactsSchema = Schema({
-  name: {
-    type: String,
-    required: [true, 'Set name for contact'],
-    minlengh: 5,
-    maxlength: 30,
+const contactSchema = Schema(
+  {
+    name: {
+      type: String,
+      required: [true, 'Set name for contact'],
+      min: [3, 'Too short name'],
+    },
+    email: {
+      type: String,
+      required: true,
+    },
+    phone: {
+      type: String,
+      required: true,
+    },
+    favorite: {
+      type: Boolean,
+      default: false,
+    },
   },
-  email: {
-    type: String,
-    required: true,
-  },
-  phone: {
-    type: String,
-    required: true,
-  },
-  favorite: {
-    type: Boolean,
-    default: false,
-  },
-});
+  { versionKey: false, timestamps: true },
+);
 
-const Contacts = model('contact', contactsSchema);
-module.exports = Contacts;
+const Contact = model('contact', contactSchema);
+module.exports = Contact;
 
 // enum: ["sale", "stock", "promocode"], один из многих
 // match: codeRegexp регулярное выражегие
