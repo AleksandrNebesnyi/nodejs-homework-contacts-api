@@ -1,10 +1,9 @@
 const mongoose = require('mongoose');
 const app = require('./app');
+const process = require('process');
 
 const PORT = process.env.PORT || 4000;
 const DB_HOST = process.env.DB_HOST;
-console.log(DB_HOST);
-console.log(PORT);
 
 // Подключение к bd
 
@@ -34,12 +33,12 @@ mongoose
 // })
 
 // Консолит отключение от базы
-mongoose.connection.on('disconnected', _ => {
+mongoose.connection.on('disconnected', () => {
   console.log('Database disconnected');
 });
 
 // Отключение от базы при событии SIGINT (ctrl + C)
-process.on('SIGINT', async () => {
+process.on('SIGINT', () => {
   console.info(
     '\x1b[36m%s\x1b[0m',
     'Connection for DB disconnected and app terminated',
