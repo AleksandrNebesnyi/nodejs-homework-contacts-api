@@ -38,7 +38,7 @@ mongoose.connection.on('disconnected', () => {
 });
 
 // Отключение от базы при событии SIGINT (ctrl + C)
-process.on('SIGINT', () => {
+process.on('SIGINT', async () => {
   console.info(
     '\x1b[36m%s\x1b[0m',
     'Connection for DB disconnected and app terminated',

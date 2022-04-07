@@ -6,6 +6,7 @@ const {
   subscriptionValidation,
 } = require('../../middlewares/userValidation');
 const authenticate = require('../../middlewares/authenticate');
+const upload = require('../../middlewares/upload');
 
 const {
   registerUser,
@@ -13,6 +14,7 @@ const {
   logoutUser,
   currentUser,
   updateSubscriptionUser,
+  uploadAvatarUser,
 } = require('../../controllers/usersController'); // Контроллеры маршрутов
 
 router.post('/signup', registerLoginValidation, asyncWrapper(registerUser)); // Роут для регистрации юзера
@@ -25,4 +27,10 @@ router.patch(
   subscriptionValidation,
   asyncWrapper(updateSubscriptionUser),
 ); // Роут для обновления статуса
+router.patch(
+  '/avatars',
+  authenticate,
+  upload.single('avatar'),
+  asyncWrapper(uploadAvatarUser),
+); // Обновление аватара
 module.exports = router;
