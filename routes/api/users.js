@@ -4,6 +4,7 @@ const { asyncWrapper } = require('../../helpers/asyncWrapper'); // Мидлва�
 const {
   registerLoginValidation,
   subscriptionValidation,
+  resendVerifyUserValidation,
 } = require('../../middlewares/userValidation');
 const authenticate = require('../../middlewares/authenticate');
 const upload = require('../../middlewares/upload');
@@ -15,6 +16,8 @@ const {
   currentUser,
   updateSubscriptionUser,
   uploadAvatarUser,
+  verifyUser,
+  resendVerifyUser,
 } = require('../../controllers/usersController'); // Контроллеры маршрутов
 
 router.post('/signup', registerLoginValidation, asyncWrapper(registerUser)); // Роут для регистрации юзера
@@ -33,4 +36,10 @@ router.patch(
   upload.single('avatar'),
   asyncWrapper(uploadAvatarUser),
 ); // Обновление аватара
+router.get('/verify/:verificationToken', asyncWrapper(verifyUser)); // Верификация юзера
+router.post(
+  '/verify/',
+  resendVerifyUserValidation,
+  asyncWrapper(resendVerifyUser),
+); // Запрос повторной верификации юзера
 module.exports = router;

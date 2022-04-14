@@ -13,6 +13,7 @@ const {
 } = require('../services/usersServices');
 const { login, logout } = require('../services/authServices');
 const { editAvatar } = require('../helpers/editAvatar');
+const { verify, resendVerify } = require('../services/emailServices');
 // Регистрация юзера
 const registerUser = async (req, res) => {
   const { email } = req.body;
@@ -93,6 +94,29 @@ const uploadAvatarUser = async (req, res) => {
     .json({ message: 'Please, provide valid file [jpeg, png, jpg]' });
   await fs.unlink(filePath);
 };
+
+// Контроллер верификации юзера
+const verifyUser = async (req, res) => {
+  const verifyToken = req.params.verificationToken;
+  const result = await verify(verifyToken);
+
+  if (result) {
+    return res.status(200).json({ message: 'Verification successful' });
+  }
+
+  res.status(404).json({ message: 'User not found' });
+};
+
+// Контроллер повторной верификации юзера
+const resendVerifyUser = async (req, res) => {
+  const result = await resendVerify(req.body.email);
+
+  if (result) {
+    return res.status(200).json({ message: 'Verification email sent' });
+  }
+
+  res.status(400).json({ message: 'Verification has already been passed' });
+};
 module.exports = {
   registerUser,
   loginUser,
@@ -100,4 +124,6 @@ module.exports = {
   currentUser,
   updateSubscriptionUser,
   uploadAvatarUser,
+  verifyUser,
+  resendVerifyUser,
 };
