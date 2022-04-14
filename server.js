@@ -22,15 +22,15 @@ mongoose
     process.exit(1);
   });
 
-// // Консолит подключение к базе
-// mongoose.connection.on('connected', (_) => {
-//   console.log('Database connection successful')
-// })
+// Консолит подключение к базе
+// mongoose.connection.on('connected', _ => {
+//   console.log('Database connection successful');
+// });
 
-// // Обработка ошибки при коннекте
-// mongoose.connection.on('error', err => {
-//   console.error(`Database connection error: ${err.code}`)
-// })
+// Обработка ошибки при коннекте
+mongoose.connection.on('error', err => {
+  console.error(`Database connection error: ${err.code}`);
+});
 
 // Консолит отключение от базы
 mongoose.connection.on('disconnected', () => {

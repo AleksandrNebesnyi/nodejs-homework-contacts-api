@@ -6,7 +6,7 @@ COPY . /app
 
 RUN npm install
 
-EXPOSE 3000
+EXPOSE 4000
 
 CMD ["node", "server.js"]
 
@@ -20,5 +20,5 @@ CMD ["node", "server.js"]
 #  docker run -d id образа- Распаковка в контейнер 
 # без переноса в терминал контейнера но с созданием нового контейнера
 
-# docker run -d -p  port VPS (3000): port localserver(4000) id образа- 
+# docker run -d -p  port VPS (4000): port localserver(3000) id образа- 
 # Распаковка в контейнер cуказанием порта VPS and local port
