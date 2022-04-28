@@ -1,6 +1,7 @@
 const express = require('express');
 const logger = require('morgan');
 const cors = require('cors');
+require('dotenv').config();
 
 const contactsRouter = require('./routes/api/contacts');
 
@@ -15,7 +16,7 @@ app.use(express.json());
 app.use('/api/contacts', contactsRouter);
 
 // Ответ на всех урлы, которые не заматчились
-app.use((req, res) => {
+app.use((_, res) => {
   res.status(404).json({ message: 'Not found' });
 });
 

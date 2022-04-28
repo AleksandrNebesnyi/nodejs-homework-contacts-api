@@ -16,7 +16,7 @@ const schemaAddContact = Joi.object({
 });
 
 // Схема валидации обновления контакта
-const schemaPatchContact = Joi.object({
+const schemaUpdateContact = Joi.object({
   name: Joi.string().alphanum().min(2).max(30).optional(),
   email: Joi.string()
     .email({
@@ -29,9 +29,13 @@ const schemaPatchContact = Joi.object({
     .optional(),
 }).min(1);
 
+// Схема валидации обновления статуса контакта
+const schemaUpdateContactStatus = Joi.object({
+  favorite: Joi.boolean().required(),
+});
 // Мидвар для обработки ошибок валидации
-const validate = (schema, res, obj, next) => {
-  const validationLogs = schema.validate(obj);
+const validate = (schema, res, req, next) => {
+  const validationLogs = schema.validate(req.body);
 
   if (validationLogs.error) {
     return res
@@ -47,6 +51,9 @@ module.exports = {
     return validate(schemaAddContact, res, req.body, next);
   },
   updateContactValidation: (req, res, next) => {
-    return validate(schemaPatchContact, res, req.body, next);
+    return validate(schemaUpdateContact, res, req.body, next);
+  },
+  updateContactStatusValidation: (req, res, next) => {
+    return validate(schemaUpdateContactStatus, req, res, next);
   },
 };
