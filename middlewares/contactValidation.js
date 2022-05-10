@@ -1,6 +1,5 @@
 // Мидлвар для валидации
 const Joi = require('joi');
-const validate = require('./validation');
 
 // Схема валидации создания контакта
 const schemaAddContact = Joi.object({
@@ -34,18 +33,18 @@ const schemaUpdateContact = Joi.object({
 const schemaUpdateContactStatus = Joi.object({
   favorite: Joi.boolean().required(),
 });
-// // Мидвар для обработки ошибок валидации
-// const validate = (schema, res, req, next) => {
-//   const validationLogs = schema.validate(req.body);
+// Мидвар для обработки ошибок валидации
+const validate = (schema, res, req, next) => {
+  const validationLogs = schema.validate(req.body);
 
-//   if (validationLogs.error) {
-//     return res
-//       .status(400)
-//       .json({ message: validationLogs.error.message.replace(/"/g, '') });
-//   }
+  if (validationLogs.error) {
+    return res
+      .status(400)
+      .json({ message: validationLogs.error.message.replace(/"/g, '') });
+  }
 
-//   next();
-// };
+  next();
+};
 
 module.exports = {
   addContactValidation: (req, res, next) => {
