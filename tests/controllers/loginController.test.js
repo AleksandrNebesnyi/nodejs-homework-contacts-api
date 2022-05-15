@@ -4,59 +4,74 @@
 // ответ должен иметь статус-код 200
 // в ответе должен возвращаться токен
 // в ответе должен возвращаться объект user с 2 полями email и subscription, имеющие тип данных String
-
+const mongoose = require('mongoose');
 const request = require('supertest');
 const app = require('../../app');
-// const jwt = require('jsonwebtoken');
-// require('dotenv').config();
-// // const express = require('express');
-// const { loginUser } = require('../../controllers/usersController');
-// // app.post('/api/users/login', loginUser);
-// // It's not serious...
-// describe('test loginUserController', () => {
-//   test('should return status:200 and token', async () => {
-//     const user = {
-//       _id: '1',
-//       email: 'Arhangel9382973@gmail.com',
-//       subscription: 'starter',
-//       createdAt: new Date().getTime(),
-//     };
-//     const token = jwt.sign(
-//       {
-//         _id: user._id,
-//         createdAt: user.createdAt,
-//       },
-//       process.env.SECRET_KEY,
-//     );
-//     const mReq = {
-//       headers: {
-//         authorization: `Bearer ${token}`,
-//       },
-//     };
-//     const mRes = {
-//       email: user.email,
-//       subscription: user.subscription,
-//     };
-//     const mockNext = jest.fn();
-//     loginUser(mReq, mRes, mockNext);
-//     expect(mReq.token).toEqual(token);
-//     expect(mReq.user._id).toEqual(user._id);
-//     expect(mReq.user.createdAt).toEqual(user.createdAt);
-//     expect(mockNext).toHaveBeenCalled();
+const User = require('../../schemas/users');
+require('dotenv').config();
+const { DB_HOST } = process.env;
 
-//   });
-// });
-// It's not serious...
-describe('PATCH avatar uploading', () => {
-  it('should return not authorized without token', async () => {
+describe('test auth', () => {
+  let server;
+  beforeAll(() => (server = app.listen(3000)));
+  afterAll(() => server.close());
+
+  beforeEach((done) => {
+    mongoose.connect(DB_HOST).then(() => done());
+  });
+
+  afterEach((done) => {
+    mongoose.connection.close(() => done());
+  });
+
+  test('test register route', async () => {
+    // const newUser = {
+    //   email: 'bogdan@gmail.com',
+    //   password: '123456',
+    // };
+
+    // const user = await User.create(newUser);
+
+    /*
+        1. Проверить правильность получаемого ответа на 
+        AJAX-запрос документации
+        2. Проверить что в базу записался нужный элемент.
+        */
+
+    const loginUser = {
+      email: 'a.nebesnyi@gmail.com',
+      password: 'Arhangel9382973',
+    };
+
+    // check data in database
+
     const response = await request(app)
-      .patch('/api/users/avatars')
-      .set('Authorization', '');
+      .post('/api/users/login')
+      .send(loginUser);
+    expect(response.statusCode).toBe(200); // status 200
+    console.log(response.body.token);
+    const { body } = response;
+    const { email } = body.user;
+    const { subscription } = body.user;
 
-    expect(response.type).toBe('application/json');
-    expect(response.statusCode).toEqual(401);
-    expect(response.body).toBeDefined();
-    expect(response.body.message).toBeDefined();
-    expect(response.body.message).toMatch('Not authorized');
+    expect(subscription).toBe('starter');
+    expect(body.token).toBeTruthy(); // create token is Ok
+    const { token } = await User.findOne({ email });
+    expect(body.token).toBe(token); // tokens match
   });
 });
+// ------------------------------------------
+//  not serious...
+// describe('PATCH avatar uploading', () => {
+//   it('should return not authorized without token', async () => {
+//     const response = await request(app)
+//       .patch('/api/users/avatars')
+//       .set('Authorization', '');
+
+//     expect(response.type).toBe('application/json');
+//     expect(response.statusCode).toEqual(401);
+//     expect(response.body).toBeDefined();
+//     expect(response.body.message).toBeDefined();
+//     expect(response.body.message).toMatch('Not authorized');
+//   });
+// });
