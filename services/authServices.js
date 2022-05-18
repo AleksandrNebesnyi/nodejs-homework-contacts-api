@@ -14,8 +14,7 @@ const login = async ({ email, password }) => {
   // Иначе - создаем, подписываем и возвращаем токен с временем жизни
   const id = user.id;
   const payload = { id };
-  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '1h' });
-  console.log(token);
+  const token = jwt.sign(payload, SECRET_KEY, { expiresIn: '3h' });
 
   await User.updateToken(id, token);
   return token;

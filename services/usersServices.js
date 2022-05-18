@@ -1,8 +1,8 @@
 const User = require('../schemas/users');
 
 // Создает нового юзера в базе
-const createUser = async body => {
-  const user = await new User(body);
+const createUser = async (body, avatarURL) => {
+  const user = await new User({ ...body, avatarURL });
   user.setPassword(body.password);
   return user.save();
 };
@@ -34,10 +34,22 @@ const updateSubscription = async (id, subscription) => {
   return user;
 };
 
+// Обновляет аватар юзера
+const updateAvatar = async (id, url) => {
+  const avatarURL = await User.findOneAndUpdate(
+    { _id: id },
+    { avatarURL: url },
+    { new: true },
+  );
+  console.log(avatarURL);
+  return avatarURL;
+};
+
 module.exports = {
   findUserById,
   findUserByEmail,
   createUser,
   updateToken,
   updateSubscription,
+  updateAvatar,
 };

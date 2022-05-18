@@ -1,4 +1,7 @@
 // Контроллеры - логика обработки маршрутов
+const fs = require('fs').promises;
+const path = require('path');
+const gravatar = require('gravatar');
 
 // Импорт функций для работы с  БД
 const {
@@ -6,18 +9,22 @@ const {
   findUserByEmail,
   createUser,
   updateSubscription,
+  updateAvatar,
 } = require('../services/usersServices');
 const { login, logout } = require('../services/authServices');
+const { editAvatar } = require('../helpers/editAvatar');
 // Регистрация юзера
 const registerUser = async (req, res) => {
-  const user = await findUserByEmail(req.body.email);
+  const { email } = req.body;
+  const user = await findUserByEmail(email);
 
   if (user) {
     return res.status(409).json({ message: 'Email in use' });
   }
+  const avatarURL = gravatar.url(email);
 
-  const { email, subscription } = await createUser(req.body);
-  res.status(201).json({ user: { email, subscription } });
+  const result = await createUser(req.body, avatarURL);
+  res.status(201).json({ result });
 };
 
 //  Вход юзера
@@ -38,7 +45,6 @@ const logoutUser = async (req, res) => {
   res.status(204).json({ message: 'No Content' });
 };
 
-
 // Текущий юзер
 const currentUser = async (req, res) => {
   const currentUser = await findUserById(req.user.id);
@@ -57,10 +63,41 @@ const updateSubscriptionUser = async (req, res) => {
     res.status(200).json({ user: { email, subscription }, status: 'updated' });
   }
 };
+
+// Контроллер аватара юзера
+const uploadAvatarUser = async (req, res) => {
+  const filePath = req.file.path;
+
+  const fileName = req.file.filename;
+  const userId = req.user._id;
+  const avatarsDir = path.join(__dirname, '../', 'public', 'avatars');
+
+  if (req.file) {
+    await editAvatar(filePath); // Обрабатывает картинку
+
+    const newFileName = `${userId}_${fileName}`;
+
+    const resultUpload = path.join(avatarsDir, newFileName);
+
+    await fs.rename(filePath, resultUpload); // Переносит картинку в папку с аватарами
+
+    const newAvatarUrl = path.join('avatars', newFileName); // Ссылка на новый аватар
+
+    const url = await updateAvatar(userId, newAvatarUrl);
+
+    return res.status(200).json({ avatarURL: url });
+  }
+
+  res
+    .status(400)
+    .json({ message: 'Please, provide valid file [jpeg, png, jpg]' });
+  await fs.unlink(filePath);
+};
 module.exports = {
   registerUser,
   loginUser,
   logoutUser,
   currentUser,
   updateSubscriptionUser,
+  uploadAvatarUser,
 };
