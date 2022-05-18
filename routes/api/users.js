@@ -4,7 +4,7 @@ const { asyncWrapper } = require('../../helpers/asyncWrapper'); // Мидлва�
 const {
   registerLoginValidation,
   subscriptionValidation,
-  resendVerifyUserValidation,
+  mailVerifyUserValidation,
 } = require('../../middlewares/userValidation');
 const authenticate = require('../../middlewares/authenticate');
 const upload = require('../../middlewares/upload');
@@ -38,8 +38,8 @@ router.patch(
 ); // Обновление аватара
 router.get('/verify/:verificationToken', asyncWrapper(verifyUser)); // Верификация юзера
 router.post(
-  '/verify/',
-  resendVerifyUserValidation,
+  '/verify',
+  mailVerifyUserValidation,
   asyncWrapper(resendVerifyUser),
 ); // Запрос повторной верификации юзера
 module.exports = router;

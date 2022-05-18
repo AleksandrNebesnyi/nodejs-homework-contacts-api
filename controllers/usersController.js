@@ -97,8 +97,8 @@ const uploadAvatarUser = async (req, res) => {
 
 // Контроллер верификации юзера
 const verifyUser = async (req, res) => {
-  const verifyToken = req.params.verificationToken;
-  const result = await verify(verifyToken);
+  const { verificationToken } = req.params;
+  const result = await verify(verificationToken);
 
   if (result) {
     return res.status(200).json({ message: 'Verification successful' });

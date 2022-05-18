@@ -49,7 +49,7 @@ module.exports = {
   subscriptionValidation: (req, res, next) => {
     return validate(schemaSubscriptionUser, res, req, next);
   },
-  resendVerifyUserValidation: (req, res, next) => {
+  mailVerifyUserValidation: (req, res, next) => {
     return validate(schemaResendVerifyUser, req, res, next);
   },
 };

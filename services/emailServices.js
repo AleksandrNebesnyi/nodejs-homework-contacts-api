@@ -1,9 +1,9 @@
 // Отправка письма через Sendgrid
 const User = require('../schemas/users');
-const { sendEmail } = require('../helpers/sendEmail');
+const sendEmail = require('../helpers/sendEmail');
 
-const verify = async verifyToken => {
-  const user = await User.findOne({ verifyToken });
+const verify = async verificationToken => {
+  const user = await User.findOne({ verificationToken });
   if (user) {
     await User.findByIdAndUpdate(user._id, {
       verifyToken: null,
@@ -26,13 +26,8 @@ const resendVerify = async email => {
     <p>
       Ваш логін: ${email}
     </p>
-    <p>
-      Ваш пароль: *********
-    </p>
-    <p>
-      Для підтвердження реєстрації перейдіть за посиланням:
-    </p>
-    <<a href="http://localhost:3000/api/auth/users/verify/${user.verify}" target="_blank">
+    
+    <a href="http://localhost:4000//api/users/verify/${user.verificationToken}" target="_blank">Для підтвердження реєстрації перейдіть за посиланням</a>
     `,
     };
     await sendEmail(data);

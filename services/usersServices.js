@@ -1,12 +1,12 @@
 const User = require('../schemas/users');
-const nanoid = require('nanoid');
+const { nanoid } = require('nanoid');
 const sendEmail = require('../helpers/sendEmail');
 
 // Создает нового юзера в базе
 const createUser = async (body, avatarURL) => {
-  const verifyToken = nanoid();
+  const verificationToken = nanoid();
   const { email, password } = body;
-  const user = await new User({ ...body, avatarURL, verifyToken });
+  const user = await new User({ ...body, avatarURL, verificationToken });
   user.setPassword(password);
   const data = {
     to: email,
@@ -16,13 +16,8 @@ const createUser = async (body, avatarURL) => {
     <p>
       Ваш логін: ${email}
     </p>
-    <p>
-      Ваш пароль: *********
-    </p>
-    <p>
-      Для підтвердження реєстрації перейдіть за посиланням:
-    </p>
-    <<a href="http://localhost:3000/api/auth/users/verify/${user.verifyToken}" target="_blank">
+      
+    <a href="http://localhost:4000//api/users/verify/${user.verificationToken}" target="_blank">Для підтвердження реєстрації перейдіть за посиланням</a>
     `,
   };
   await sendEmail(data);
