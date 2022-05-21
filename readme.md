@@ -30,8 +30,10 @@ Run the linter
 npm run lint
 Run the linter in fix mode
 npm run lint:fix
+
+
 REST API
-The REST API to the example app is described below.
+
 
 Contacts
 Get list of contacts
